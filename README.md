@@ -106,7 +106,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 $ helm install . --name my-release \
-    --set cluster.firstNode=gke-test01-node-default-pool-478bef52-wljs
+    --set cluster.join=74e8b44d-b1df-11e7-b0b3-42010a9a00b2,http://storageos:5705
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
