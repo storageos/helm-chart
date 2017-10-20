@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-redis-test
+  annotations:
+    volume.beta.kubernetes.io/storage-class: {{ .Values.storageclass.name }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ .Release.Name }}-redis-test
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: master
+      image: kubernetes/redis:v1
+      ports:
+        - containerPort: 6379
+      resources:
+        limits:
+          cpu: "0.1"
+      volumeMounts:
+        - mountPath: /redis-master-data
+          name: redis-data
+  volumes:
+    - name: redis-data
+      persistentVolumeClaim:
+        claimName: {{ .Release.Name }}-redis-test

@@ -1,0 +1,11 @@
+apiVersion: storage.k8s.io/v1beta1
+kind: StorageClass
+metadata:
+  name: {{ .Values.storageclass.name }}
+provisioner: kubernetes.io/storageos
+parameters:
+  pool: default
+  description: Kubernetes volume
+  fsType: ext4
+  adminSecretNamespace: {{ .Values.api.secretNamespace }}
+  adminSecretName: {{ .Values.api.secretName }}
