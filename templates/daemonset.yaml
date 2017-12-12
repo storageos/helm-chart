@@ -60,6 +60,9 @@ spec:
           - name: state
             mountPath: /var/lib/storageos
             mountPropagation: Bidirectional
+          - name: socket
+            mountPath: /run/docker/plugins
+            mountPropagation: Bidirectional
         securityContext:
           privileged: true
           capabilities:
@@ -72,3 +75,7 @@ spec:
         - name: state
           hostPath:
             path: /var/lib/storageos
+        - name: socket
+          hostPath:
+            path: /run/docker/plugins
+
