@@ -16,13 +16,14 @@ $ helm install .
 ```
 
 IMPORTANT:  The StorageOS api address must be manually set in the `api.address`
-value.  Set this to the ip address of one of the Kubernetes nodes, e.g. `http://10.0.0.1`.
+value.  Set this to the ip address of one of the Kubernetes nodes, e.g.
+`http://10.0.0.1:5705`.
 This introduces a single point of failure which we hope to remove by
 auto-populating a list of nodes or a service address.  The ip address (or
 hostname) given here MUST be accesible by the Kubernetes master, which may not
-be running the StorageOS service (`http://127.0.0.1` will work otherwise).
+be running the StorageOS service (`http://127.0.0.1:5705` will work otherwise).
 
-example in values.yaml:
+Example in values.yaml:
 
 ```yaml
 api:
