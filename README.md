@@ -22,6 +22,17 @@ auto-populating a list of nodes or a service address.  The ip address (or
 hostname) given here MUST be accesible by the Kubernetes master, which may not
 be running the StorageOS service (`http://127.0.0.1` will work otherwise).
 
+example in values.yaml:
+
+```yaml
+api:
+  secretName: storageos-api
+  secretNamespace: default
+  # address should be set to the external service address/name as it needs to be
+  # accessible by the Kubernetes master.
+  address: http://10.0.0.1:5705
+```
+
 ## Prerequisites
 
 - Kubernetes 1.8+ with Beta APIs enabled
