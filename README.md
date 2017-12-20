@@ -13,6 +13,11 @@ Features such as replication, encryption and caching help protect data and maxim
 $ git clone https://github.com/storageos/helm-chart.git storageos
 $ cd storageos
 $ helm install .
+
+# Follow the instructions printed by helm install to update the link between Kubernetes and StorageOS. They look like:
+$ ClusterIP=$(kubectl get svc/storageosapi --namespace kube-system -o custom-columns=IP:spec.clusterIP --no-headers=true)
+$ ApiAddress=$(echo -n "tcp://$ClusterIP:5705" | base64)
+$ kubectl patch secret/storageos-api --namespace kube-system --patch "{\"data\":{\"apiAddress\": \"$ApiAddress\"}}"
 ```
 
 ## Prerequisites
@@ -21,7 +26,7 @@ $ helm install .
 - Kubernetes must be configured to allow:
     - Privileged mode containers (enabled by default)
     - Feature gate: MountPropagation=true.  This can be done by appending `--feature-gates MountPropagation=true` to the
-      kube-apiserver start command.
+      kube-apiserver and kubelet services.
 
 ## Installing the Chart
 
@@ -36,25 +41,47 @@ section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
+## Post-install configuration
+
+Follow the instructions printed by helm install to update the link between Kubernetes and StorageOS.
+
+Example:
+```console
+$ ClusterIP=$(kubectl get svc/storageosapi --namespace kube-system -o custom-columns=IP:spec.clusterIP --no-headers=true)
+$ ApiAddress=$(echo -n "tcp://$ClusterIP:5705" | base64)
+$ kubectl patch secret/storageos-api --namespace kube-system --patch "{\"data\":{\"apiAddress\": \"$ApiAddress\"}}"
+```
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:
 
 ```console
-$ helm delete my-release
+$ helm delete --purge my-release
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
 ## Configuration
 
-The `cluster.join` parameter must be set to a vaild join string.  The join string helps bootstrap a new cluster and
+The `cluster.join` parameter must be set to a valid join string.  The join string helps bootstrap a new cluster and
 provides instructions to nodes joining an existing cluster.  Typically the join string should be composed of a cluster
-id and the internal service address of the StorageOS api, for example:
+id and/or hostname(s)/IP-address(es) of cluster nodes. For helm options the comma needs to be escaped like this "a\,b".
+
+Examples:
 
 ```console
-$ helm install . --name my-release \
-    --set cluster.join=74e8b44d-b1df-11e7-b0b3-42010a9a00b2,http://storageos:5705
+$ helm install . --name my-release --set cluster.join=node01
+```
+
+```console
+$ storageos cluster create
+61e476d0-5905-4be8-af33-d5109784e3d3
+$ helm install . --name my-release --set cluster.join=61e476d0-5905-4be8-af33-d5109784e3d3
+```
+
+```console
+$ helm install . --name my-release --set cluster.join="61e476d0-5905-4be8-af33-d5109784e3d3\,node01"
 ```
 
 The first item in the list can be a cluster id as above, or a hostname or ip address of a single node in the cluster.
@@ -66,8 +93,7 @@ Alternatively, set the first item in the list to be the ip address or hostname o
 will boostrap the cluster when StorageOS is started for the first time on it.  It only serves a special purpose until
 the cluster has initialised.
 
-The remaining items in the join list should be one or more hostnames or ip addresses for new node to join to.  The api
-service endpoint can be used here (`http://storageos:5705`) to avoid specifying individual hostnames or addresses.
+The remaining items in the join list should be one or more hostnames or ip addresses for new node to join to.
 
 > **Tip**: Future releases will remove the requirement to specify `cluster.join` and instead the [discovery service](https://github.com/storageos/discovery)
 will run as part of the deployment.
@@ -84,21 +110,13 @@ Parameter | Description | Default
 `storageclass.pool` | Default storage pool for storage class | `default`
 `storageclass.fsType` | Default filesystem type for storage class | `ext4`
 `api.secretName` | Name of the secret used for storing api location and credentials | `storageos-api`
-`api.secretNamespace` | Namespace of the secret used for storing api location and credentials | `default`
-`api.address` | Hostname or IP address of the external StorageOS api endpoint.  This must be accessible from the Kubernetes master. | `http://storageos:5705`
+`api.secretNamespace` | Namespace of the secret used for storing api location and credentials. Needed in every namespace to use StorageOS. | `default`
+`api.address` | Hostname or IP address of the external StorageOS api endpoint.  This must be accessible from the Kubernetes master. | `http://storageosapi:5705`
 `api.username` | Username to authenticate to the StorageOS api with | `storageos`
 `api.password` | Password to authenticate to the StorageOS api with | `storageos`
-`service.name` | Name of the StorageOS api service | `storageos`
-`service.type` | Type of service to create | `LoadBalancer`
-`service.externalIPs` | Service external IP addresses | `[]`
-`service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
-`service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
-`service.externalPort` | External service port | `15705`
+`service.name` | Name of the StorageOS api service | `storageosapi`
+`service.externalPort` | External service port | `5705`
 `service.internalPort` | Internal service port | `5705`
-`ingress.enabled` | If true, Ingress will be created | `false`
-`ingress.annotations` | Ingress annotations | `{}`
-`ingress.hosts` | Ingress hostnames | `[]`
-`ingress.tls` | Ingress TLS configuration (YAML) | `[]`
 `resources` | Pod resource requests & limits | `{}`
 
 
@@ -106,7 +124,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 $ helm install . --name my-release \
-    --set cluster.join=74e8b44d-b1df-11e7-b0b3-42010a9a00b2,http://storageos:5705
+    --set cluster.join="74e8b44d-b1df-11e7-b0b3-42010a9a00b2\,node01"
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
@@ -117,35 +135,3 @@ $ helm install . --name my-release -f values.yaml
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-### Ingress TLS
-If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [kube-lego](https://github.com/jetstack/kube-lego)), please refer to the documentation for that mechanism.
-
-To manually configure TLS, first create/retrieve a key & certificate pair for the address(es) you wish to protect. Then create a TLS secret in the namespace:
-
-```console
-kubectl create secret tls storageos-tls --cert=path/to/tls.cert --key=path/to/tls.key
-```
-
-Include the secret's name, along with the desired hostnames, in the Ingress TLS section of your custom `values.yaml` file:
-
-```yaml
-server:
-  ingress:
-    ## If true, StorageOS Ingress will be created
-    ##
-    enabled: true
-
-    ## StorageOS Ingress hostnames
-    ## Must be provided if Ingress is enabled
-    ##
-    hosts:
-      - storageos.domain.com
-
-    ## StorageOS Ingress TLS configuration
-    ## Secrets must be manually created in the namespace
-    ##
-    tls:
-      - secretName: storageos-tls
-        hosts:
-          - storageos.domain.com
-```

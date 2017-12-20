@@ -4,8 +4,8 @@ metadata:
   name: {{ .Values.storageclass.name }}
 provisioner: kubernetes.io/storageos
 parameters:
-  pool: default
+  pool: {{ .Values.storageclass.pool }}
   description: Kubernetes volume
-  fsType: ext4
+  fsType: {{ .Values.storageclass.fsType }}
   adminSecretNamespace: {{ .Values.api.secretNamespace }}
   adminSecretName: {{ .Values.api.secretName }}

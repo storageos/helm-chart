@@ -2,6 +2,7 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: {{ template "fullname" . }}
+  namespace: {{ .Values.service.namespace }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
@@ -43,7 +44,7 @@ spec:
             fieldRef:
               fieldPath: spec.nodeName
         - name: JOIN
-          value: {{ .Values.cluster.join }}
+          value: {{ required "ERROR: add \"--set cluster.join=<first node-name/ip-address>\". See README.md for details." .Values.cluster.join }}
           # value: http://10.1.5.224:5705
           # value: {{ template "fullname" . }}:5705,{{ .Values.firstNode }}:5705
           # valueFrom:
