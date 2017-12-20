@@ -15,7 +15,7 @@ $ cd storageos
 $ helm install .
 
 # Follow the instructions printed by helm install to update the link between Kubernetes and StorageOS. They look like:
-$ ClusterIP=$(kubectl get svc/storageosapi --namespace kube-system -o custom-columns=IP:spec.clusterIP --no-headers=true)
+$ ClusterIP=$(kubectl get svc/storageos --namespace kube-system -o custom-columns=IP:spec.clusterIP --no-headers=true)
 $ ApiAddress=$(echo -n "tcp://$ClusterIP:5705" | base64)
 $ kubectl patch secret/storageos-api --namespace kube-system --patch "{\"data\":{\"apiAddress\": \"$ApiAddress\"}}"
 ```
@@ -47,7 +47,7 @@ Follow the instructions printed by helm install to update the link between Kuber
 
 Example:
 ```console
-$ ClusterIP=$(kubectl get svc/storageosapi --namespace kube-system -o custom-columns=IP:spec.clusterIP --no-headers=true)
+$ ClusterIP=$(kubectl get svc/storageos --namespace kube-system -o custom-columns=IP:spec.clusterIP --no-headers=true)
 $ ApiAddress=$(echo -n "tcp://$ClusterIP:5705" | base64)
 $ kubectl patch secret/storageos-api --namespace kube-system --patch "{\"data\":{\"apiAddress\": \"$ApiAddress\"}}"
 ```
@@ -114,7 +114,7 @@ Parameter | Description | Default
 `api.address` | Hostname or IP address of the external StorageOS api endpoint.  This must be accessible from the Kubernetes master. | `http://storageosapi:5705`
 `api.username` | Username to authenticate to the StorageOS api with | `storageos`
 `api.password` | Password to authenticate to the StorageOS api with | `storageos`
-`service.name` | Name of the StorageOS api service | `storageosapi`
+`service.name` | Name of the StorageOS service | `storageos`
 `service.externalPort` | External service port | `5705`
 `service.internalPort` | Internal service port | `5705`
 `resources` | Pod resource requests & limits | `{}`

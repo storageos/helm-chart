@@ -22,13 +22,13 @@ api:
   secretName: storageos-api
   secretNamespace: default
   # secrets are namespace specific, create 1+N for every namespace.
-  address: storageosapi:5705
+  address: storageos:5705
   # address is used to generate the ApiAddress value in the secret. This
   # updated later with the service ClusterIP which is not known yet.
   username: storageos
   password: storageos
 service:
-  name: storageosapi
+  name: storageos
   namespace: kube-system
   type: ClusterIP
   externalPort: 5705
