@@ -55,11 +55,16 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        - name: DEVICE_DIR
+          value: /var/lib/kubelet/plugins/kubernetes.io~storageos/devices
         volumeMounts:
           - name: fuse
             mountPath: /dev/fuse
           - name: state
             mountPath: /var/lib/storageos
+            mountPropagation: Bidirectional
+          - name: kubelet
+            mountPath: /var/lib/kubelet/plugins/kubernetes.io~storageos
             mountPropagation: Bidirectional
         securityContext:
           privileged: true
@@ -73,3 +78,7 @@ spec:
         - name: state
           hostPath:
             path: /var/lib/storageos
+        - name: kubelet
+          hostPath:
+            path: /var/lib/kubelet/plugins/kubernetes.io~storageos
+
