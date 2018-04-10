@@ -8,13 +8,18 @@ metadata:
 spec:
   template:
     metadata:
+      name: {{ template "fullname" . }}
       labels:
         app: {{ template "name" . }}
+        chart: {{ template "chart" . }}
+        heritage: {{ .Release.Service }}
         release: {{ .Release.Name }}
-      name: {{ template "fullname" . }}
     spec:
       hostPID: true
       hostNetwork: true
+      {{- if .Values.rbacEnabled }}
+      serviceAccountName: {{ template "fullname" . }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -55,17 +60,23 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        - name: NAMESPACE
+          value: {{ .Values.service.namespace }}
+        {{- if .Values.sharedDir }}
         - name: DEVICE_DIR
-          value: /var/lib/kubelet/plugins/kubernetes.io~storageos/devices
+          value: {{ .Values.sharedDir }}/devices
+        {{- end }}
         volumeMounts:
           - name: fuse
             mountPath: /dev/fuse
           - name: state
             mountPath: /var/lib/storageos
             mountPropagation: Bidirectional
-          - name: kubelet
-            mountPath: /var/lib/kubelet/plugins/kubernetes.io~storageos
+          {{- if .Values.sharedDir }}
+          - name: shared
+            mountPath: {{ .Values.sharedDir }}
             mountPropagation: Bidirectional
+          {{- end }}
         securityContext:
           privileged: true
           capabilities:
@@ -78,7 +89,8 @@ spec:
         - name: state
           hostPath:
             path: /var/lib/storageos
-        - name: kubelet
+        {{- if .Values.sharedDir }}
+        - name: shared
           hostPath:
-            path: /var/lib/kubelet/plugins/kubernetes.io~storageos
-
+            path: {{ .Values.sharedDir }}
+        {{- end }}
