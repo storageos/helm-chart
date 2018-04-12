@@ -62,9 +62,9 @@ spec:
               fieldPath: status.podIP
         - name: NAMESPACE
           value: {{ .Values.service.namespace }}
-        {{- if .Values.sharedDir }}
+        {{- if .Values.cluster.sharedDir }}
         - name: DEVICE_DIR
-          value: {{ .Values.sharedDir }}/devices
+          value: {{ .Values.cluster.sharedDir }}/devices
         {{- end }}
         volumeMounts:
           - name: fuse
@@ -72,9 +72,9 @@ spec:
           - name: state
             mountPath: /var/lib/storageos
             mountPropagation: Bidirectional
-          {{- if .Values.sharedDir }}
+          {{- if .Values.cluster.sharedDir }}
           - name: shared
-            mountPath: {{ .Values.sharedDir }}
+            mountPath: {{ .Values.cluster.sharedDir }}
             mountPropagation: Bidirectional
           {{- end }}
         securityContext:
@@ -89,8 +89,8 @@ spec:
         - name: state
           hostPath:
             path: /var/lib/storageos
-        {{- if .Values.sharedDir }}
+        {{- if .Values.cluster.sharedDir }}
         - name: shared
           hostPath:
-            path: {{ .Values.sharedDir }}
+            path: {{ .Values.cluster.sharedDir }}
         {{- end }}
