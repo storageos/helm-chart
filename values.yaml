@@ -29,7 +29,7 @@ api:
   password: storageos
 service:
   name: storageos
-  namespace: kube-system
+  namespace: storageos
   type: ClusterIP
   externalPort: 5705
   internalPort: 5705
