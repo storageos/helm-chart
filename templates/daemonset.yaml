@@ -71,7 +71,11 @@ spec:
             fieldRef:
               fieldPath: status.podIP
         - name: NAMESPACE
-          value: default
+          value: {{ .Values.service.namespace }}
+        {{- if .Values.cluster.sharedDir }}
+        - name: DEVICE_DIR
+          value: {{ .Values.cluster.sharedDir }}/devices
+        {{- end }}
         - name: CSI_ENDPOINT
           value: unix://var/lib/kubelet/plugins/storageos/csi.sock
         securityContext:
@@ -93,6 +97,11 @@ spec:
           - name: state
             mountPath: /var/lib/storageos
             mountPropagation: "Bidirectional"
+          {{- if .Values.cluster.sharedDir }}
+          - name: shared
+            mountPath: {{ .Values.cluster.sharedDir }}
+            mountPropagation: Bidirectional
+          {{- end }}
       volumes:
       - name: registrar-socket-dir
         hostPath:
@@ -116,3 +125,8 @@ spec:
       - name: state
         hostPath:
           path: /var/lib/storageos
+      {{- if .Values.cluster.sharedDir }}
+      - name: shared
+        hostPath:
+          path: {{ .Values.cluster.sharedDir }}
+      {{- end }}
