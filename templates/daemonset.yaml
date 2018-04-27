@@ -49,7 +49,7 @@ spec:
             fieldRef:
               fieldPath: spec.nodeName
         - name: JOIN
-          value: {{ required "ERROR: add \"--set cluster.join=<first node-name/ip-address>\". See README.md for details." .Values.cluster.join }}
+          value: {{ .Values.cluster.join }}
           # value: http://10.1.5.224:5705
           # value: {{ template "fullname" . }}:5705,{{ .Values.firstNode }}:5705
           # valueFrom:
