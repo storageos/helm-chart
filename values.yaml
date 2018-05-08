@@ -35,3 +35,29 @@ service:
   externalPort: 5705
   internalPort: 5705
 resources: {}
+
+csi:
+  # provisionCreds is credentials for volume create and delete operations.
+  provisionCreds:
+    enable: false
+    username:
+    password:
+    secretName: storageos-provision-creds
+  # controllerPublishCreds is credentials for controller volume publish and unpublish operations.
+  controllerPublishCreds:
+    enable: false
+    username:
+    password:
+    secretName: storageos-ctrl-publish-creds
+  # nodeStageCreds is credentials for node volume stage operations.
+  nodeStageCreds:
+    enable: false
+    username:
+    password:
+    secretName: storageos-node-stage-creds
+  # nodePublishCreds is credentials for node volume publish operations.
+  nodePublishCreds:
+    enable: false
+    username:
+    password:
+    secretName: storageos-node-publish-creds

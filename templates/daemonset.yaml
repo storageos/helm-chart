@@ -78,6 +78,67 @@ spec:
         {{- end }}
         - name: CSI_ENDPOINT
           value: unix://var/lib/kubelet/plugins/storageos/csi.sock
+        # CSI credentials config.
+        {{- if .Values.csi.provisionCreds.enable }}
+        - name: CSI_REQUIRE_CREDS_CREATE_VOL
+          value: "true"
+        - name: CSI_REQUIRE_CREDS_DELETE_VOL
+          value: "true"
+        - name: CSI_PROVISION_CREDS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.csi.provisionCreds.secretName }}
+              key: username
+        - name: CSI_PROVISION_CREDS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.csi.provisionCreds.secretName }}
+              key: password
+        {{- end }}
+        {{- if .Values.csi.controllerPublishCreds.enable }}
+        - name: CSI_REQUIRE_CREDS_CTRL_PUB_VOL
+          value: "true"
+        - name: CSI_REQUIRE_CREDS_CTRL_UNPUB_VOL
+          value: "true"
+        - name: CSI_CTRL_PUB_CREDS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.csi.controllerPublishCreds.secretName }}
+              key: username
+        - name: CSI_CTRL_PUB_CREDS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.csi.controllerPublishCreds.secretName }}
+              key: password
+        {{- end }}
+        {{- if .Values.csi.nodeStageCreds.enable }}
+        - name: CSI_REQUIRE_CREDS_NODE_STG_VOL
+          value: "true"
+        - name: CSI_NODE_STG_CREDS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.csi.nodeStageCreds.secretName }}
+              key: username
+        - name: CSI_NODE_STG_CREDS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.csi.nodeStageCreds.secretName }}
+              key: password
+        {{- end }}
+        {{- if .Values.csi.nodePublishCreds.enable }}
+        - name: CSI_REQUIRE_CREDS_NODE_PUB_VOL
+          value: "true"
+        - name: CSI_NODE_PUB_CREDS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.csi.nodePublishCreds.secretName }}
+              key: username
+        - name: CSI_NODE_PUB_CREDS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.csi.nodePublishCreds.secretName }}
+              key: password
+        {{- end }}
         securityContext:
           privileged: true
           capabilities:

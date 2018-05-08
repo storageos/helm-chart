@@ -19,8 +19,27 @@ parameters:
   # Value with space is an invalid label in CSI volumes.
   # description: Kubernetes volume
   fsType: {{ .Values.storageclass.fsType }}
-  adminSecretNamespace: {{ .Values.api.secretNamespace }}
-  adminSecretName: {{ .Values.api.secretName }}
+
+  # CSI credentials config.
+  {{- if .Values.csi.provisionCreds.enable }}
+  csiProvisionerSecretName: {{ .Values.csi.provisionCreds.secretName }}
+  csiProvisionerSecretNamespace: {{ .Values.service.namespace }}
+  {{- end }}
+
+  {{- if .Values.csi.controllerPublishCreds.enable }}
+  csiControllerPublishSecretName: {{ .Values.csi.controllerPublishCreds.secretName }}
+  csiControllerPublishSecretNamespace: {{ .Values.service.namespace }}
+  {{- end}}
+
+  {{- if .Values.csi.nodeStageCreds.enable }}
+  csiNodeStageSecretName: {{ .Values.csi.nodeStageCreds.secretName }}
+  csiNodeStageSecretNamespace: {{ .Values.service.namespace }}
+  {{- end }}
+
+  {{- if .Values.csi.nodePublishCreds.enable }}
+  csiNodePublishSecretName: {{ .Values.csi.nodePublishCreds.secretName }}
+  csiNodePublishSecretNamespace: {{ .Values.service.namespace }}
+  {{- end }}
 
 ---
 
@@ -106,7 +125,7 @@ rules:
     verbs: ["get", "list", "watch", "update"]
   - apiGroups: ["storage.k8s.io"]
     resources: ["storageclasses"]
-    verbs: ["list", "watch"]
+    verbs: ["list", "watch", "get"]
   - apiGroups: [""]
     resources: ["secrets"]
     verbs: ["get"]
@@ -128,6 +147,9 @@ rules:
   - apiGroups: [""]
     resources: ["nodes"]
     verbs: ["get", "list", "watch"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses"]
+    verbs: ["list", "watch", "get"]
   - apiGroups: ["storage.k8s.io"]
     resources: ["volumeattachments"]
     verbs: ["get", "list", "watch", "update"]
@@ -174,4 +196,20 @@ subjects:
 roleRef:
   kind: ClusterRole
   name: csi-attacher-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+# Bind StatefulSet service account to Key Management role.
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: sidecar-key-management-binding
+subjects:
+  - kind: ServiceAccount
+    name: storageos-statefulset-sa
+    namespace: {{ .Values.service.namespace }}
+roleRef:
+  kind: ClusterRole
+  name: key-management-role
   apiGroup: rbac.authorization.k8s.io
