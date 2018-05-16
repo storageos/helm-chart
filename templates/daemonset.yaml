@@ -155,6 +155,8 @@ spec:
             mountPath: /dev
           - name: fuse
             mountPath: /dev/fuse
+          - name: sys
+            mountPath: /sys
           - name: state
             mountPath: /var/lib/storageos
             mountPropagation: "Bidirectional"
@@ -183,6 +185,9 @@ spec:
       - name: fuse
         hostPath:
           path: /dev/fuse
+      - name: sys
+        hostPath:
+          path: /sys
       - name: state
         hostPath:
           path: /var/lib/storageos
