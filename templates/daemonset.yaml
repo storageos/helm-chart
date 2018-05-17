@@ -4,7 +4,7 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: {{ template "fullname" . }}
-  namespace: {{ .Values.service.namespace }}
+  namespace: {{ .Values.namespace }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
@@ -81,7 +81,7 @@ spec:
             fieldRef:
               fieldPath: status.podIP
         - name: NAMESPACE
-          value: {{ .Values.service.namespace }}
+          value: {{ .Values.namespace }}
         {{- if .Values.cluster.sharedDir }}
         - name: DEVICE_DIR
           value: {{ .Values.cluster.sharedDir }}/devices

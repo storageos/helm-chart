@@ -2,7 +2,7 @@
 
 1. Please run the following commands now to configure the link between Kubernetes and StorageOS(*):
 
-ClusterIP=$(kubectl get svc/{{ .Values.service.name }} --namespace {{ .Values.service.namespace }} -o custom-columns=IP:spec.clusterIP --no-headers=true)
+ClusterIP=$(kubectl get svc/{{ .Values.service.name }} --namespace {{ .Values.namespace }} -o custom-columns=IP:spec.clusterIP --no-headers=true)
 ApiAddress=$(echo -n "tcp://$ClusterIP:{{ .Values.service.externalPort }}" | base64)
 kubectl patch secret/{{ .Values.api.secretName }} --namespace {{ .Values.api.secretNamespace }} --patch "{\"data\": {\"apiAddress\": \"$ApiAddress\"}}"
 

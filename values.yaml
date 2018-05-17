@@ -32,9 +32,9 @@ api:
   # updated later with the service ClusterIP which is not known yet.
   username: storageos
   password: storageos
+namespace: storageos
 service:
   name: storageos
-  namespace: storageos
   type: ClusterIP
   externalPort: 5705
   internalPort: 5705

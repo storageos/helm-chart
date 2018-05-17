@@ -1,6 +1,6 @@
 kind: Namespace
 apiVersion: v1
 metadata:
-  name: {{ .Values.service.namespace }}
+  name: {{ .Values.namespace }}
   labels:
     name: storageos

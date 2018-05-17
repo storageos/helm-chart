@@ -17,9 +17,9 @@ $ cd storageos
 $ helm install .
 
 # Follow the instructions printed by helm install to update the link between Kubernetes and StorageOS. They look like:
-$ ClusterIP=$(kubectl get svc/storageos --namespace kube-system -o custom-columns=IP:spec.clusterIP --no-headers=true)
+$ ClusterIP=$(kubectl get svc/storageos --namespace storageos -o custom-columns=IP:spec.clusterIP --no-headers=true)
 $ ApiAddress=$(echo -n "tcp://$ClusterIP:5705" | base64)
-$ kubectl patch secret/storageos-api --namespace kube-system --patch "{\"data\":{\"apiAddress\": \"$ApiAddress\"}}"
+$ kubectl patch secret/storageos-api --namespace storageos --patch "{\"data\":{\"apiAddress\": \"$ApiAddress\"}}"
 ```
 
 IMPORTANT:  The StorageOS api address must be manually set in the `api.address`
@@ -68,9 +68,9 @@ Follow the instructions printed by helm install to update the link between Kuber
 
 Example:
 ```console
-$ ClusterIP=$(kubectl get svc/storageos --namespace kube-system -o custom-columns=IP:spec.clusterIP --no-headers=true)
+$ ClusterIP=$(kubectl get svc/storageos --namespace storageos -o custom-columns=IP:spec.clusterIP --no-headers=true)
 $ ApiAddress=$(echo -n "tcp://$ClusterIP:5705" | base64)
-$ kubectl patch secret/storageos-api --namespace kube-system --patch "{\"data\":{\"apiAddress\": \"$ApiAddress\"}}"
+$ kubectl patch secret/storageos-api --namespace storageos --patch "{\"data\":{\"apiAddress\": \"$ApiAddress\"}}"
 ```
 
 ## Uninstalling the Chart
