@@ -17,7 +17,7 @@ spec:
       serviceAccount: storageos-statefulset-sa
       containers:
       - name: csi-external-provisioner
-        image: quay.io/k8scsi/csi-provisioner:v0.2.0
+        image: quay.io/k8scsi/csi-provisioner:canary
         args:
           - "--v=5"
           - "--provisioner=storageos"
@@ -29,7 +29,7 @@ spec:
           - name: plugin-dir
             mountPath: /csi
       - name: csi-external-attacher
-        image: quay.io/k8scsi/csi-attacher:v0.2.0
+        image: quay.io/k8scsi/csi-attacher:canary
         args:
           - "--v=5"
           - "--csi-address=$(ADDRESS)"
