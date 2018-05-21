@@ -30,13 +30,16 @@ spec:
         - containerPort: {{ .Values.service.internalPort }}
           name: api
         livenessProbe:
-          initialDelaySeconds: 30
-          failureThreshold: 3
+          initialDelaySeconds: 10
+          timeoutSeconds: 10
+          failureThreshold: 10
           httpGet:
             path: /v1/health
             port: api
         readinessProbe:
           initialDelaySeconds: 5
+          timeoutSeconds: 10
+          failureThreshold: 10
           httpGet:
             path: /v1/health
             port: api
