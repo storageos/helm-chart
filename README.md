@@ -125,7 +125,7 @@ Parameter | Description | Default
 `image.repository` | StorageOS container image repository | `storageos/node`
 `image.tag` | StorageOS container image tag | `latest`
 `image.pullPolicy` | StorageOS container image pull policy | `IfNotPresent`
-`rbacEnabled` | Use of k8s RBAC features | `false`
+`rbacEnabled` | Use of k8s RBAC features | `true`
 `storageclass.name` | StorageOS storage class name | `fast`
 `storageclass.pool` | Default storage pool for storage class | `default`
 `storageclass.fsType` | Default filesystem type for storage class | `ext4`

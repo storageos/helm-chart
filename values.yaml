@@ -7,7 +7,7 @@ image:
   pullPolicy: IfNotPresent
 
 ## does your cluster have rbac enabled? assume no by default
-rbacEnabled: false
+rbacEnabled: true
 
 cluster:
   # to generate a join token see:
