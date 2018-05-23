@@ -12,64 +12,30 @@ Features such as replication, encryption and caching help protect data and maxim
 ```console
 $ git clone https://github.com/storageos/helm-chart.git storageos
 $ cd storageos
-$ helm install .
-
-# Follow the instructions printed by helm install to update the link between Kubernetes and StorageOS. They look like:
-$ ClusterIP=$(kubectl get svc/storageos --namespace kube-system -o custom-columns=IP:spec.clusterIP --no-headers=true)
-$ ApiAddress=$(echo -n "tcp://$ClusterIP:5705" | base64)
-$ kubectl patch secret/storageos-api --namespace kube-system --patch "{\"data\":{\"apiAddress\": \"$ApiAddress\"}}"
-```
-
-IMPORTANT:  The StorageOS api address must be manually set in the `api.address`
-value.  Set this to the ip address of one of the Kubernetes nodes, e.g.
-`http://10.0.0.1:5705`.
-This introduces a single point of failure which we hope to remove by
-auto-populating a list of nodes or a service address.  The ip address (or
-hostname) given here MUST be accesible by the Kubernetes master, which may not
-be running the StorageOS service (`http://127.0.0.1:5705` will work otherwise).
-
-Example in values.yaml:
-
-```yaml
-api:
-  secretName: storageos-api
-  secretNamespace: default
-  # address should be set to the external service address/name as it needs to be
-  # accessible by the Kubernetes master.
-  address: http://10.0.0.1:5705
+$ git checkout csi-deployment
+$ helm install . --name my-release --set cluster.join=<join-token/node-ip>
 ```
 
 ## Prerequisites
 
-- Kubernetes 1.8+ with Beta APIs enabled
+- Kubernetes 1.10 and above
 - Kubernetes must be configured to allow:
     - Privileged mode containers (enabled by default)
     - Feature gate: MountPropagation=true.  This can be done by appending `--feature-gates MountPropagation=true` to the
-      kube-apiserver and kubelet services.
+      kube-apiserver and kubelet services. Enabled by default in k8s 1.10.
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release .
+$ helm install . --name my-release --set cluster.join=<join-token/node-ip>
 ```
 
 The command deploys StorageOS on the Kubernetes cluster in the default configuration. The [configuration](#configuration)
 section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
-
-## Post-install configuration
-
-Follow the instructions printed by helm install to update the link between Kubernetes and StorageOS.
-
-Example:
-```console
-$ ClusterIP=$(kubectl get svc/storageos --namespace kube-system -o custom-columns=IP:spec.clusterIP --no-headers=true)
-$ ApiAddress=$(echo -n "tcp://$ClusterIP:5705" | base64)
-$ kubectl patch secret/storageos-api --namespace kube-system --patch "{\"data\":{\"apiAddress\": \"$ApiAddress\"}}"
-```
 
 ## Uninstalling the Chart
 
@@ -128,15 +94,19 @@ Parameter | Description | Default
 `storageclass.name` | StorageOS storage class name | `fast`
 `storageclass.pool` | Default storage pool for storage class | `default`
 `storageclass.fsType` | Default filesystem type for storage class | `ext4`
-`api.secretName` | Name of the secret used for storing api location and credentials | `storageos-api`
-`api.secretNamespace` | Namespace of the secret used for storing api location and credentials. Needed in every namespace to use StorageOS. | `default`
-`api.address` | Hostname or IP address of the external StorageOS api endpoint.  This must be accessible from the Kubernetes master. | `http://storageosapi:5705`
-`api.username` | Username to authenticate to the StorageOS api with | `storageos`
-`api.password` | Password to authenticate to the StorageOS api with | `storageos`
-`service.name` | Name of the StorageOS service | `storageos`
-`service.externalPort` | External service port | `5705`
-`service.internalPort` | Internal service port | `5705`
 `resources` | Pod resource requests & limits | `{}`
+`csi.provisionCreds.enable` | Enable credentials for volume provision operations | `false`
+`csi.provisionCreds.username` | Username for CSI provision operation authentication |
+`csi.provisionCreds.password` | Password for CSI provision operatiion authentication |
+`csi.controllerPublishCreds.enable` | Enable credentials for CSI controller publish volume operations | `false`
+`csi.controllerPublishCreds.username` | Username for CSI controller publish volume operations |
+`csi.controllerPublishCreds.password` | Password for CSI controller publish volume operations |
+`csi.nodeStageCreds.enable` | Enable credentials for CSI node stage volume operations | `false`
+`csi.nodeStageCreds.username` | Username for CSI node stage volume operations |
+`csi.nodeStageCreds.password` | Password for CSI node stage volume operations |
+`csi.nodePublishCreds.enable` | Enable credentials for CSI node publish volume operations | `false`
+`csi.nodePublishCreds.username` | Username for CSI node publish volume operations |
+`csi.nodePublishCreds.password` | Password for CSI node publish volume operations |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
