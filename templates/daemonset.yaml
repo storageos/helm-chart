@@ -17,6 +17,22 @@ spec:
       serviceAccount: storageos-daemonset-sa
       hostPID: true
       hostNetwork: true
+      initContainers:
+      - name: enable-lio
+        image: storageos/init:0.1
+        imagePullPolicy: Always
+        volumeMounts:
+          - name: kernel-modules
+            mountPath: /lib/modules
+            readOnly: true
+          - name: sys
+            mountPath: /sys
+            mountPropagation: Bidirectional
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+            - SYS_ADMIN
       containers:
       - name: csi-driver-registrar
         image: quay.io/k8scsi/driver-registrar:v0.2.0
@@ -46,16 +62,16 @@ spec:
         - containerPort: {{ .Values.service.internalPort }}
           name: api
         livenessProbe:
-          initialDelaySeconds: 10
+          initialDelaySeconds: 65
           timeoutSeconds: 10
-          failureThreshold: 10
+          failureThreshold: 5
           httpGet:
             path: /v1/health
             port: api
         readinessProbe:
-          initialDelaySeconds: 5
+          initialDelaySeconds: 65
           timeoutSeconds: 10
-          failureThreshold: 10
+          failureThreshold: 5
           httpGet:
             path: /v1/health
             port: api
@@ -169,6 +185,9 @@ spec:
             mountPropagation: Bidirectional
           {{- end }}
       volumes:
+      - name: kernel-modules
+        hostPath:
+          path: /lib/modules
       - name: registrar-socket-dir
         hostPath:
           path: /var/lib/kubelet/device-plugins/
