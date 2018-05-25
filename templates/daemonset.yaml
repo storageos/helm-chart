@@ -20,6 +20,22 @@ spec:
       {{- if .Values.rbacEnabled }}
       serviceAccountName: {{ template "fullname" . }}
       {{- end }}
+      initContainers:
+      - name: enable-lio
+        image: storageos/init:0.1
+        imagePullPolicy: Always
+        volumeMounts:
+          - name: kernel-modules
+            mountPath: /lib/modules
+            readOnly: true
+          - name: sys
+            mountPath: /sys
+            mountPropagation: Bidirectional
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+            - SYS_ADMIN
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -30,19 +46,20 @@ spec:
         - containerPort: {{ .Values.service.internalPort }}
           name: api
         livenessProbe:
-          initialDelaySeconds: 30
-          failureThreshold: 3
+          initialDelaySeconds: 65
+          failureThreshold: 5
           httpGet:
             path: /v1/health
             port: api
         readinessProbe:
-          initialDelaySeconds: 5
+          initialDelaySeconds: 65
+          timeoutSeconds: 10
+          failureThreshold: 5
           httpGet:
             path: /v1/health
             port: api
         resources:
 {{ toYaml .Values.resources | indent 12 }}
-
         env:
         - name: HOSTNAME
           valueFrom:
@@ -85,6 +102,9 @@ spec:
             add:
             - SYS_ADMIN
       volumes:
+        - name: kernel-modules
+          hostPath:
+            path: /lib/modules
         - name: fuse
           hostPath:
             path: /dev/fuse
