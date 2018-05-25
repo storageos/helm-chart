@@ -47,6 +47,7 @@ spec:
           name: api
         livenessProbe:
           initialDelaySeconds: 65
+          timeoutSeconds: 10
           failureThreshold: 5
           httpGet:
             path: /v1/health
