@@ -3,12 +3,16 @@
 # Declare variables to be passed into your templates.
 image:
   repository: storageos/node
-  tag: latest
+  tag: 0.10.0
   pullPolicy: IfNotPresent
+
+## does your cluster have rbac enabled? assume no by default
+rbacEnabled: false
+
 cluster:
   # to generate a join token see:
   # https://docs.storageos.com/docs/install/prerequisites/clusterdiscovery
-  join:
+  join: 
 
   # sharedDir should be set if running kubelet in a container.  This should
   # be the path shared into to kubelet container, typically:
