@@ -1,11 +1,4 @@
-kind: Namespace
-apiVersion: v1
-metadata:
-  name: {{ .Values.service.namespace }}
-  labels:
-    name: storageos
-
----
+{{- if .Values.csi.enable }}
 
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
@@ -213,3 +206,5 @@ roleRef:
   kind: ClusterRole
   name: key-management-role
   apiGroup: rbac.authorization.k8s.io
+
+{{- end }}

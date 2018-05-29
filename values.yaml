@@ -41,6 +41,7 @@ service:
 resources: {}
 
 csi:
+  enable: false
   # provisionCreds is credentials for volume create and delete operations.
   provisionCreds:
     enable: false

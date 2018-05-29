@@ -1,3 +1,5 @@
+{{- if .Values.csi.enable }}
+
 kind: StatefulSet
 apiVersion: apps/v1beta1
 metadata:
@@ -45,3 +47,4 @@ spec:
             path: /var/lib/kubelet/plugins/storageos/
             type: DirectoryOrCreate
 
+{{- end }}

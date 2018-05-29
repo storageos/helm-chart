@@ -1,14 +1,13 @@
+{{- if not .Values.csi.enable }}
+
+apiVersion: extensions/v1beta1
 kind: DaemonSet
-apiVersion: apps/v1
 metadata:
-  name: storageos-daemon
+  name: {{ template "fullname" . }}
   namespace: {{ .Values.service.namespace }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
-  selector:
-    matchLabels:
-      app: storageos-driver
   template:
     metadata:
       name: {{ template "fullname" . }}
@@ -18,32 +17,12 @@ spec:
         heritage: {{ .Release.Service }}
         release: {{ .Release.Name }}
     spec:
-      serviceAccount: storageos-daemonset-sa
       hostPID: true
       hostNetwork: true
       {{- if .Values.rbacEnabled }}
       serviceAccountName: {{ template "fullname" . }}
       {{- end }}
       containers:
-      - name: csi-driver-registrar
-        image: quay.io/k8scsi/driver-registrar:v0.2.0
-        args:
-          - "--v=5"
-          - "--csi-address=$(ADDRESS)"
-        env:
-          - name: ADDRESS
-            value: /csi/csi.sock # plugin-dir is mounted at /csi
-            # value: unix://var/lib/kubelet/plugins/storageos/csi.sock
-          - name: KUBE_NODE_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
-        volumeMounts:
-          - name: plugin-dir
-            mountPath: /csi
-            # This is where kubelet.sock exists.
-          - name: registrar-socket-dir
-            mountPath: /var/lib/csi/sockets/
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -76,6 +55,12 @@ spec:
               fieldPath: spec.nodeName
         - name: JOIN
           value: {{ required "ERROR: add \"--set cluster.join=<first node-name/ip-address>\". See README.md for details." .Values.cluster.join }}
+          # value: http://10.1.5.224:5705
+          # value: {{ template "fullname" . }}:5705,{{ .Values.firstNode }}:5705
+          # valueFrom:
+          #   secretKeyRef:
+          #     name: {{ template "fullname" . }}
+          #     key: clusterId
         - name: ADVERTISE_IP
           valueFrom:
             fieldRef:
@@ -87,23 +72,12 @@ spec:
           value: {{ .Values.cluster.sharedDir }}/devices
         {{- end }}
         volumeMounts:
-          - name: kubelet-dir
-            mountPath: /var/lib/kubelet
-            mountPropagation: "Bidirectional"
-          - name: plugin-dir
-            mountPath: /var/lib/kubelet/plugins/storageos/
-          - name: device-dir
-            mountPath: /dev
           - name: fuse
             mountPath: /dev/fuse
           - name: sys
             mountPath: /sys
           - name: state
             mountPath: /var/lib/storageos
-            mountPropagation: "Bidirectional"
-          {{- if .Values.cluster.sharedDir }}
-          - name: shared
-            mountPath: {{ .Values.cluster.sharedDir }}
             mountPropagation: Bidirectional
           {{- if .Values.cluster.sharedDir }}
           - name: shared
@@ -130,3 +104,5 @@ spec:
           hostPath:
             path: {{ .Values.cluster.sharedDir }}
         {{- end }}
+
+{{- end }}
