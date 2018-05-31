@@ -127,6 +127,7 @@ Parameter | Description | Default
 `image.repository` | StorageOS container image repository | `storageos/node`
 `image.tag` | StorageOS container image tag | `latest`
 `image.pullPolicy` | StorageOS container image pull policy | `IfNotPresent`
+`rbacEnabled` | Use of k8s RBAC features | `true`
 `storageclass.name` | StorageOS storage class name | `fast`
 `storageclass.pool` | Default storage pool for storage class | `default`
 `storageclass.fsType` | Default filesystem type for storage class | `ext4`
@@ -155,4 +156,11 @@ $ helm install . --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+
+## RBAC
+
+Kubernetes implements Rold-Based Access Control mode in the stable api (v1) since v1.8. In case your cluster's api server is started with `--authorization-mode=RBAC`, you should be running the chart with the configuration parameter `rbacEnabled: true`
+
+The chart will create a Role with permissions to manage secrets. With this functionality, StorageOS will be able to generate its own secrets for cluster discovery or volume encryption.
 
