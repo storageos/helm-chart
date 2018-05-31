@@ -16,22 +16,22 @@ parameters:
   # CSI credentials config.
   {{- if .Values.csi.provisionCreds.enable }}
   csiProvisionerSecretName: {{ .Values.csi.provisionCreds.secretName }}
-  csiProvisionerSecretNamespace: {{ .Values.service.namespace }}
+  csiProvisionerSecretNamespace: {{ .Values.namespace }}
   {{- end }}
 
   {{- if .Values.csi.controllerPublishCreds.enable }}
   csiControllerPublishSecretName: {{ .Values.csi.controllerPublishCreds.secretName }}
-  csiControllerPublishSecretNamespace: {{ .Values.service.namespace }}
+  csiControllerPublishSecretNamespace: {{ .Values.namespace }}
   {{- end}}
 
   {{- if .Values.csi.nodeStageCreds.enable }}
   csiNodeStageSecretName: {{ .Values.csi.nodeStageCreds.secretName }}
-  csiNodeStageSecretNamespace: {{ .Values.service.namespace }}
+  csiNodeStageSecretNamespace: {{ .Values.namespace }}
   {{- end }}
 
   {{- if .Values.csi.nodePublishCreds.enable }}
   csiNodePublishSecretName: {{ .Values.csi.nodePublishCreds.secretName }}
-  csiNodePublishSecretNamespace: {{ .Values.service.namespace }}
+  csiNodePublishSecretNamespace: {{ .Values.namespace }}
   {{- end }}
 
 ---
@@ -68,7 +68,7 @@ kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: storageos-daemonset-sa
-  namespace: {{ .Values.service.namespace }}
+  namespace: {{ .Values.namespace }}
 
 ---
 
@@ -80,7 +80,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: storageos-daemonset-sa
-    namespace: {{ .Values.service.namespace }}
+    namespace: {{ .Values.namespace }}
 roleRef:
   kind: ClusterRole
   name: driver-registrar-role
@@ -96,7 +96,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: storageos-daemonset-sa
-    namespace: {{ .Values.service.namespace }}
+    namespace: {{ .Values.namespace }}
 roleRef:
   kind: ClusterRole
   name: key-management-role
@@ -157,7 +157,7 @@ kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: storageos-statefulset-sa
-  namespace: {{ .Values.service.namespace }}
+  namespace: {{ .Values.namespace }}
 
 ---
 
@@ -169,7 +169,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: storageos-statefulset-sa
-    namespace: {{ .Values.service.namespace }}
+    namespace: {{ .Values.namespace }}
 roleRef:
   kind: ClusterRole
   name: csi-provisioner-role
@@ -185,7 +185,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: storageos-statefulset-sa
-    namespace: {{ .Values.service.namespace }}
+    namespace: {{ .Values.namespace }}
 roleRef:
   kind: ClusterRole
   name: csi-attacher-role
@@ -201,7 +201,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: storageos-statefulset-sa
-    namespace: {{ .Values.service.namespace }}
+    namespace: {{ .Values.namespace }}
 roleRef:
   kind: ClusterRole
   name: key-management-role

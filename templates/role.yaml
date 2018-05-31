@@ -4,8 +4,9 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
+  namespace: {{ .Values.namespace }}
   name: {{ template "fullname" . }}
-  namespace: {{ .Values.service.namespace }}
+  namespace: {{ .Values.namespace }}
   labels:
     app: {{ template "name" . }}
     chart: {{ template "chart" . }}
