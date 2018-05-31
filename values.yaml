@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: storageos/node
-  tag: 0.10.0
+  tag: 1.0.0-rc1
   pullPolicy: IfNotPresent
 
 ## does your cluster have rbac enabled? assume no by default
@@ -34,8 +34,35 @@ api:
   password: storageos
 service:
   name: storageos
-  namespace: default
+  namespace: storageos
   type: ClusterIP
   externalPort: 5705
   internalPort: 5705
 resources: {}
+
+csi:
+  enable: false
+  # provisionCreds is credentials for volume create and delete operations.
+  provisionCreds:
+    enable: false
+    username: username1
+    password: password1
+    secretName: storageos-provision-creds
+  # controllerPublishCreds is credentials for controller volume publish and unpublish operations.
+  controllerPublishCreds:
+    enable: false
+    username: username2
+    password: password2
+    secretName: storageos-ctrl-publish-creds
+  # nodeStageCreds is credentials for node volume stage operations.
+  nodeStageCreds:
+    enable: false
+    username: username3
+    password: password3
+    secretName: storageos-node-stage-creds
+  # nodePublishCreds is credentials for node volume publish operations.
+  nodePublishCreds:
+    enable: false
+    username: username4
+    password: password4
+    secretName: storageos-node-publish-creds
