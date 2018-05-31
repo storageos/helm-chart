@@ -4,7 +4,7 @@ kind: DaemonSet
 apiVersion: apps/v1
 metadata:
   name: storageos-daemon
-  namespace: {{ .Values.service.namespace }}
+  namespace: {{ .Values.namespace }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
@@ -92,7 +92,7 @@ spec:
             fieldRef:
               fieldPath: status.podIP
         - name: NAMESPACE
-          value: {{ .Values.service.namespace }}
+          value: {{ .Values.namespace }}
         {{- if .Values.cluster.sharedDir }}
         - name: DEVICE_DIR
           value: {{ .Values.cluster.sharedDir }}/devices

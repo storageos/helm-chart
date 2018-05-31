@@ -6,7 +6,7 @@ kind: RoleBinding
 metadata:
   namespace: {{ .Values.namespace }}
   name: {{ template "fullname" . }}
-  namespace: {{ .Values.service.namespace }}
+  namespace: {{ .Values.namespace }}
   labels:
     app: {{ template "name" . }}
     chart: {{ template "chart" . }}
