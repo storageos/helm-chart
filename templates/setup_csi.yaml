@@ -4,8 +4,11 @@ kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
   name: {{ .Values.storageclass.name }}
-# Change the driver name in CSI identity service to have this name.
-# provisioner: kubernetes.io/storageos
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 provisioner: storageos
 parameters:
   pool: {{ .Values.storageclass.pool }}
@@ -41,6 +44,11 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: key-management-role
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
@@ -53,6 +61,11 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: driver-registrar-role
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 rules:
   - apiGroups: [""]
     resources: ["nodes"]
@@ -67,8 +80,13 @@ rules:
 kind: ServiceAccount
 apiVersion: v1
 metadata:
-  name: storageos-daemonset-sa
+  name: {{ template "storageos.fullname" . }}-daemonset-sa
   namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 
 ---
 
@@ -77,9 +95,14 @@ kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: driver-registrar-binding
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 subjects:
   - kind: ServiceAccount
-    name: storageos-daemonset-sa
+    name: {{ template "storageos.fullname" . }}-daemonset-sa
     namespace: {{ .Values.namespace }}
 roleRef:
   kind: ClusterRole
@@ -93,9 +116,14 @@ kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: key-management-binding
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 subjects:
   - kind: ServiceAccount
-    name: storageos-daemonset-sa
+    name: {{ template "storageos.fullname" . }}-daemonset-sa
     namespace: {{ .Values.namespace }}
 roleRef:
   kind: ClusterRole
@@ -109,6 +137,11 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: csi-provisioner-role
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 rules:
   - apiGroups: [""]
     resources: ["persistentvolumes"]
@@ -133,6 +166,11 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: csi-attacher-role
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 rules:
   - apiGroups: [""]
     resources: ["persistentvolumes"]
@@ -156,8 +194,13 @@ rules:
 kind: ServiceAccount
 apiVersion: v1
 metadata:
-  name: storageos-statefulset-sa
+  name: {{ template "storageos.fullname" . }}-statefulset-sa
   namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 
 ---
 
@@ -166,9 +209,14 @@ kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: csi-provisioner-binding
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 subjects:
   - kind: ServiceAccount
-    name: storageos-statefulset-sa
+    name: {{ template "storageos.fullname" . }}-statefulset-sa
     namespace: {{ .Values.namespace }}
 roleRef:
   kind: ClusterRole
@@ -182,9 +230,14 @@ kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: csi-attacher-binding
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 subjects:
   - kind: ServiceAccount
-    name: storageos-statefulset-sa
+    name: {{ template "storageos.fullname" . }}-statefulset-sa
     namespace: {{ .Values.namespace }}
 roleRef:
   kind: ClusterRole
@@ -198,9 +251,14 @@ kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: sidecar-key-management-binding
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 subjects:
   - kind: ServiceAccount
-    name: storageos-statefulset-sa
+    name: {{ template "storageos.fullname" . }}-statefulset-sa
     namespace: {{ .Values.namespace }}
 roleRef:
   kind: ClusterRole

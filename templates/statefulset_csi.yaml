@@ -3,23 +3,32 @@
 kind: StatefulSet
 apiVersion: apps/v1beta1
 metadata:
-  name: storageos-statefulset
+  name: {{ template "storageos.fullname" . }}-statefulset
   namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 spec:
   serviceName: {{ .Chart.Name }}
   replicas: 1
   selector:
     matchLabels:
-      app: storageos-statefulset-helpers
+      app: {{ template "storageos.name" . }}
   template:
     metadata:
       labels:
-        app: storageos-statefulset-helpers
+        app: {{ template "storageos.name" . }}
+        chart: {{ template "storageos.chart" . }}
+        heritage: {{ .Release.Service }}
+        release: {{ .Release.Name }}
     spec:
-      serviceAccount: storageos-statefulset-sa
+      serviceAccount: {{ template "storageos.fullname" . }}-statefulset-sa
       containers:
       - name: csi-external-provisioner
-        image: quay.io/k8scsi/csi-provisioner:canary
+        image: "{{ .Values.csiExternalProvisioner.repository }}:{{ .Values.csiExternalProvisioner.tag }}"
+        imagePullPolicy: {{ .Values.csiExternalProvisioner.pullPolicy }}
         args:
           - "--v=5"
           - "--provisioner=storageos"
@@ -31,7 +40,8 @@ spec:
           - name: plugin-dir
             mountPath: /csi
       - name: csi-external-attacher
-        image: quay.io/k8scsi/csi-attacher:canary
+        image: "{{ .Values.csiExternalAttacher.repository }}:{{ .Values.csiExternalAttacher.tag }}"
+        imagePullPolicy: {{ .Values.csiExternalAttacher.pullPolicy }}
         args:
           - "--v=5"
           - "--csi-address=$(ADDRESS)"

@@ -3,32 +3,35 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "storageos.fullname" . }}
   namespace: {{ .Values.namespace }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "name" . }}
+      app: {{ template "storageos.name" . }}
   template:
     metadata:
-      name: {{ template "fullname" . }}
+      name: {{ template "storageos.fullname" . }}
       labels:
-        app: {{ template "name" . }}
-        chart: {{ template "chart" . }}
+        app: {{ template "storageos.name" . }}
+        chart: {{ template "storageos.chart" . }}
         heritage: {{ .Release.Service }}
         release: {{ .Release.Name }}
     spec:
       hostPID: true
       hostNetwork: true
       {{- if .Values.rbacEnabled }}
-      serviceAccountName: {{ template "fullname" . }}
+      serviceAccountName: {{ template "storageos.fullname" . }}
       {{- end }}
       initContainers:
       - name: enable-lio
-        image: storageos/init:0.1
-        imagePullPolicy: Always
+        image: "{{ .Values.initContainer.repository }}:{{ .Values.initContainer.tag }}"
+        imagePullPolicy: {{ .Values.initContainer.pullPolicy }}
         volumeMounts:
           - name: kernel-modules
             mountPath: /lib/modules
@@ -74,11 +77,6 @@ spec:
         - name: JOIN
           value: {{ required "ERROR: add \"--set cluster.join=<first node-name/ip-address>\". See README.md for details." .Values.cluster.join }}
           # value: http://10.1.5.224:5705
-          # value: {{ template "fullname" . }}:5705,{{ .Values.firstNode }}:5705
-          # valueFrom:
-          #   secretKeyRef:
-          #     name: {{ template "fullname" . }}
-          #     key: clusterId
         - name: ADVERTISE_IP
           valueFrom:
             fieldRef:
