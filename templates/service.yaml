@@ -4,8 +4,8 @@ metadata:
   name: {{ .Values.service.name }}
   namespace: {{ .Values.namespace }}
   labels:
-    app: {{ template "name" . }}
-    chart: {{ template "chart" . }}
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
@@ -16,5 +16,5 @@ spec:
       protocol: TCP
       name: {{ .Values.service.name }}
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "storageos.name" . }}
     release: {{ .Release.Name }}

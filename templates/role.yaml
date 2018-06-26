@@ -4,24 +4,17 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  namespace: {{ .Values.namespace }}
-  name: {{ template "fullname" . }}
+  name: {{ template "storageos.fullname" . }}
   namespace: {{ .Values.namespace }}
   labels:
-    app: {{ template "name" . }}
-    chart: {{ template "chart" . }}
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 rules:
-- apiGroups:
-    - ""
-  resources:
-    - secrets
-  verbs:
-    - create
-    - get
-    - list
-    - delete
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["create", "get", "list", "delete"]
 {{- end -}}
 
 {{- end }}

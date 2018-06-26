@@ -3,15 +3,39 @@
 # Declare variables to be passed into your templates.
 image:
   repository: storageos/node
-  tag: 1.0.0-rc1
+  tag: 1.0.0-rc2
   pullPolicy: IfNotPresent
 
-## does your cluster have rbac enabled? assume no by default
+initContainer:
+  repository: storageos/init
+  tag: 0.1
+  pullPolicy: IfNotPresent
+
+csiDriverRegistrar:
+  repository: quay.io/k8scsi/driver-registrar
+  tag: v0.2.0
+  pullPolicy: IfNotPresent
+
+csiExternalProvisioner:
+  repository: quay.io/k8scsi/csi-provisioner
+  tag: canary
+  pullPolicy: Always
+
+csiExternalAttacher:
+  repository: quay.io/k8scsi/csi-attacher
+  tag: canary
+  pullPolicy: Always
+
 rbacEnabled: true
 
 cluster:
-  # to generate a join token see:
+  # To generate a join token see:
   # https://docs.storageos.com/docs/install/prerequisites/clusterdiscovery
+  # or use hostname/ip address of any or all of the cluster nodes.
+  # Example:
+  # join: node1,node2,node3
+  # or
+  # join: 10.1.5.07,10.1.5.08,10.1.5.09
   join: 
 
   # sharedDir should be set if running kubelet in a container.  This should
@@ -42,25 +66,25 @@ resources: {}
 
 csi:
   enable: false
-  # provisionCreds is credentials for volume create and delete operations.
+  # provisionCreds are credentials for volume create and delete operations.
   provisionCreds:
     enable: false
     username: username1
     password: password1
     secretName: storageos-provision-creds
-  # controllerPublishCreds is credentials for controller volume publish and unpublish operations.
+  # controllerPublishCreds are credentials for controller volume publish and unpublish operations.
   controllerPublishCreds:
     enable: false
     username: username2
     password: password2
     secretName: storageos-ctrl-publish-creds
-  # nodeStageCreds is credentials for node volume stage operations.
+  # nodeStageCreds are credentials for node volume stage operations.
   nodeStageCreds:
     enable: false
     username: username3
     password: password3
     secretName: storageos-node-stage-creds
-  # nodePublishCreds is credentials for node volume publish operations.
+  # nodePublishCreds are credentials for node volume publish operations.
   nodePublishCreds:
     enable: false
     username: username4

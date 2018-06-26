@@ -3,26 +3,32 @@
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
-  name: storageos-daemon
+  name: {{ template "storageos.fullname" . }}-daemon
   namespace: {{ .Values.namespace }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 spec:
   selector:
     matchLabels:
-      app: storageos-driver
+      app: {{ template "storageos.name" . }}
   template:
     metadata:
       labels:
-        app: storageos-driver
+        app: {{ template "storageos.name" . }}
+        chart: {{ template "storageos.chart" . }}
+        heritage: {{ .Release.Service }}
+        release: {{ .Release.Name }}
     spec:
-      serviceAccount: storageos-daemonset-sa
+      serviceAccount: {{ template "storageos.fullname" . }}-daemonset-sa
       hostPID: true
       hostNetwork: true
       initContainers:
       - name: enable-lio
-        image: storageos/init:0.1
-        imagePullPolicy: Always
+        image: "{{ .Values.initContainer.repository }}:{{ .Values.initContainer.tag }}"
+        imagePullPolicy: {{ .Values.initContainer.pullPolicy }}
         volumeMounts:
           - name: kernel-modules
             mountPath: /lib/modules
@@ -37,7 +43,8 @@ spec:
             - SYS_ADMIN
       containers:
       - name: csi-driver-registrar
-        image: quay.io/k8scsi/driver-registrar:v0.2.0
+        image: "{{ .Values.csiDriverRegistrar.repository }}:{{ .Values.csiDriverRegistrar.tag }}"
+        imagePullPolicy: {{ .Values.csiDriverRegistrar.pullPolicy }}
         args:
           - "--v=5"
           - "--csi-address=$(ADDRESS)"
@@ -85,8 +92,15 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
+        {{- if .Values.cluster.join }}
         - name: JOIN
-          value: {{ required "ERROR: add \"--set cluster.join=<first node-name/ip-address>\". See README.md for details." .Values.cluster.join }}
+          value: {{ .Values.cluster.join }}
+        {{- else }}
+        - name: JOIN
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        {{- end }}
         - name: ADVERTISE_IP
           valueFrom:
             fieldRef:

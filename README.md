@@ -1,4 +1,4 @@
-# StorageOS
+# StorageOS Helm Chart
 
 [StorageOS](https://storageos.com) is a software-based storage platform designed for cloud-native applications.  By
 deploying StorageOS on your Kubernetes cluster, local storage from cluster node is aggregated into a distributed pool,
@@ -8,6 +8,16 @@ wherever they move in the cluster.
 Features such as replication, encryption and caching help protect data and maximise performance.
 
 **NOTE**: Refer [README-CSI.md](README-CSI.md) for CSI driver installation.
+
+## Prerequisites
+
+- Kubernetes 1.8+ with Beta APIs enabled
+- Kubernetes must be configured to allow:
+    - Privileged mode containers (enabled by default)
+    - Feature gate: MountPropagation=true.  This can be done by appending `--feature-gates MountPropagation=true` to the
+      kube-apiserver and kubelet services.
+
+Refer to the [StorageOS prerequisites docs](https://docs.storageos.com/docs/install/prerequisites/) for more information.
 
 ## TL;DR
 
@@ -40,14 +50,6 @@ api:
   # accessible by the Kubernetes master.
   address: http://10.0.0.1:5705
 ```
-
-## Prerequisites
-
-- Kubernetes 1.8+ with Beta APIs enabled
-- Kubernetes must be configured to allow:
-    - Privileged mode containers (enabled by default)
-    - Feature gate: MountPropagation=true.  This can be done by appending `--feature-gates MountPropagation=true` to the
-      kube-apiserver and kubelet services.
 
 ## Installing the Chart
 
@@ -125,8 +127,11 @@ Parameter | Description | Default
 --------- | ----------- | -------
 `cluster.join` | The cluster join string.  See [cluster discovery](https://docs.storageos.com/docs/install/prerequisites/clusterdiscovery) documentation for details.
 `image.repository` | StorageOS container image repository | `storageos/node`
-`image.tag` | StorageOS container image tag | `latest`
+`image.tag` | StorageOS container image tag | `1.0.0-rc2`
 `image.pullPolicy` | StorageOS container image pull policy | `IfNotPresent`
+`initContainer.repository` | StorageOS init container image repository | `storageos/init`
+`initContainer.tag` | StorageOS init container image tag | `0.1`
+`initContainer.pullPolicy` | StorageOS init container image pull policy | `IfNotPresent`
 `rbacEnabled` | Use of k8s RBAC features | `true`
 `storageclass.name` | StorageOS storage class name | `fast`
 `storageclass.pool` | Default storage pool for storage class | `default`
