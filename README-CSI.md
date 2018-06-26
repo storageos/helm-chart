@@ -15,6 +15,8 @@ Features such as replication, encryption and caching help protect data and maxim
     - Feature gate: MountPropagation=true.  This can be done by appending `--feature-gates MountPropagation=true` to the
       kube-apiserver and kubelet services. Enabled by default in k8s 1.10.
 
+Refer to the [StorageOS prerequisites docs](https://docs.storageos.com/docs/install/prerequisites/) for more information.
+
 ## TL;DR
 
 ```console
