@@ -29,8 +29,13 @@ csiExternalAttacher:
 rbacEnabled: true
 
 cluster:
-  # to generate a join token see:
+  # To generate a join token see:
   # https://docs.storageos.com/docs/install/prerequisites/clusterdiscovery
+  # or use hostname/ip address of any or all of the cluster nodes.
+  # Example:
+  # join: node1,node2,node3
+  # or
+  # join: 10.1.5.07,10.1.5.08,10.1.5.09
   join: 
 
   # sharedDir should be set if running kubelet in a container.  This should

@@ -74,9 +74,15 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
+        {{- if .Values.cluster.join }}
         - name: JOIN
-          value: {{ required "ERROR: add \"--set cluster.join=<first node-name/ip-address>\". See README.md for details." .Values.cluster.join }}
-          # value: http://10.1.5.224:5705
+          value: {{ .Values.cluster.join }}
+        {{- else }}
+        - name: JOIN
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        {{- end }}
         - name: ADVERTISE_IP
           valueFrom:
             fieldRef:
