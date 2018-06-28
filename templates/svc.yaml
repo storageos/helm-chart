@@ -10,6 +10,12 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   type: {{ .Values.service.type }}
+  {{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{- end }}
+  {{- if (or (eq .Values.service.type "LoadBalancer") (eq .Values.service.type "NodePort")) }}
+  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy | quote }}
+  {{- end }}
   ports:
     - port: {{ .Values.service.internalPort }}
       targetPort: {{ .Values.service.externalPort }}
