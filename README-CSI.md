@@ -95,8 +95,7 @@ Parameter | Description | Default
 `initContainer.repository` | StorageOS init container image repository | `storageos/init`
 `initContainer.tag` | StorageOS init container image tag | `0.1`
 `initContainer.pullPolicy` | StorageOS init container image pull policy | `IfNotPresent`
-`csiDriverRegistrar.repository` | CSI Driver Registrar container image repository |
-`quay.io/k8scsi/driver-registrar`
+`csiDriverRegistrar.repository` | CSI Driver Registrar container image repository | `quay.io/k8scsi/driver-registrar`
 `csiDriverRegistrar.tag` | CSI Driver Registrar container image tag | `v0.2.0`
 `csiDriverRegistrar.pullPolicy` | CSI Driver Registrar container image pull policy | `IfNotPresent`
 `csiExternalProvisioner.repository` | CSI External Provisioner container image repository | `quay.io/k8scsi/csi-provisioner`
@@ -122,6 +121,14 @@ Parameter | Description | Default
 `csi.nodePublishCreds.enable` | Enable credentials for CSI node publish volume operations | `false`
 `csi.nodePublishCreds.username` | Username for CSI node publish volume operations |
 `csi.nodePublishCreds.password` | Password for CSI node publish volume operations |
+`ingress.enabled` | Enable ingress controller resource | `false`
+`ingress.hosts[0].name` | Hostname to your StorageOS installation | `storageos.local`
+`ingress.hosts[0].tls` | Utilize TLS backend in ingress | `false`
+`ingress.hosts[0].tlsSecret` | TLS Secret (certificates) | `storageos.local-tls-secret`
+`ingress.hosts[0].annotations` | Annotations for this host's ingress record | `[]`
+`ingress.secrets[0].name` | TLS Secret Name | `nil`
+`ingress.secrets[0].certificate` | TLS Secret Certificate | `nil`
+`ingress.secrets[0].key` | TLS Secret Key | `nil`
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
