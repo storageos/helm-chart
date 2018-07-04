@@ -22,7 +22,7 @@ spec:
   - host: {{ .name }}
   backend:
     serviceName: {{ $.Values.service.name }}
-    servicePort: 5705
+    servicePort: {{ $.Values.service.externalPort }}
 {{- if .tls }}
   tls:
   - hosts:
