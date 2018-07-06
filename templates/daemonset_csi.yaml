@@ -92,6 +92,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
+        - name: ADMIN_USERNAME
+          value: {{ .Values.api.username }}
+        - name: ADMIN_PASSWORD
+          value: {{ .Values.api.password }}
         {{- if .Values.cluster.join }}
         - name: JOIN
           value: {{ .Values.cluster.join }}
