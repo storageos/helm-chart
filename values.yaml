@@ -53,7 +53,7 @@ api:
   # secrets are namespace specific, create 1+N for every namespace.
   address: storageos:5705
   # address is used to generate the ApiAddress value in the secret. This
-  # updated later with the service ClusterIP which is not known yet.
+  # updated later with the service ClusterIP which is not known at this stage.
   username: storageos
   password: storageos
 namespace: storageos

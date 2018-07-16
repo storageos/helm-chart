@@ -32,25 +32,6 @@ $ ApiAddress=$(echo -n "tcp://$ClusterIP:5705" | base64)
 $ kubectl patch secret/storageos-api --namespace storageos --patch "{\"data\":{\"apiAddress\": \"$ApiAddress\"}}"
 ```
 
-IMPORTANT:  The StorageOS api address must be manually set in the `api.address`
-value.  Set this to the ip address of one of the Kubernetes nodes, e.g.
-`http://10.0.0.1:5705`.
-This introduces a single point of failure which we hope to remove by
-auto-populating a list of nodes or a service address.  The ip address (or
-hostname) given here MUST be accesible by the Kubernetes master, which may not
-be running the StorageOS service (`http://127.0.0.1:5705` will work otherwise).
-
-Example in values.yaml:
-
-```yaml
-api:
-  secretName: storageos-api
-  secretNamespace: default
-  # address should be set to the external service address/name as it needs to be
-  # accessible by the Kubernetes master.
-  address: http://10.0.0.1:5705
-```
-
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
