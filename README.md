@@ -146,7 +146,7 @@ $ helm install . --name my-release -f values.yaml
 
 ## RBAC
 
-Kubernetes implements Rold-Based Access Control mode in the stable api (v1) since v1.8. In case your cluster's api server is started with `--authorization-mode=RBAC`, you should be running the chart with the configuration parameter `rbacEnabled: true`
+Kubernetes implements Role-Based Access Control mode in the stable api (v1) since v1.8. In case your cluster's api server is started with `--authorization-mode=RBAC`, you should be running the chart with the configuration parameter `rbacEnabled: true`
 
 The chart will create a Role with permissions to manage secrets. With this functionality, StorageOS will be able to generate its own secrets for cluster discovery or volume encryption.
 
