@@ -75,9 +75,15 @@ spec:
             fieldRef:
               fieldPath: spec.nodeName
         - name: ADMIN_USERNAME
-          value: {{ .Values.api.username }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.adminSecretName }}
+              key: username
         - name: ADMIN_PASSWORD
-          value: {{ .Values.api.password }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.adminSecretName }}
+              key: password
         {{- if .Values.cluster.join }}
         - name: JOIN
           value: {{ .Values.cluster.join }}
