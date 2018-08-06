@@ -57,7 +57,7 @@ api:
   username: storageos
   password: storageos
 namespace: storageos
-adminSecretName: init-secrets
+initSecretName: init-secret
 service:
   name: storageos
   type: ClusterIP
