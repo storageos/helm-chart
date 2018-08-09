@@ -119,7 +119,7 @@ Parameter | Description | Default
 `storageclass.fsType` | Default filesystem type for storage class | `ext4`
 `api.secretName` | Name of the secret used for storing api location and credentials | `storageos-api`
 `api.secretNamespace` | Namespace of the secret used for storing api location and credentials. Needed in every namespace to use StorageOS. | `default`
-`api.address` | Hostname or IP address of the external StorageOS api endpoint.  This must be accessible from the Kubernetes master. | `http://storageosapi:5705`
+`api.address` | StorageOS service in Kubernetes | `http://storageos:5705`
 `api.username` | Username to authenticate to the StorageOS api with | `storageos`
 `api.password` | Password to authenticate to the StorageOS api with | `storageos`
 `service.name` | Name of the StorageOS service | `storageos`
