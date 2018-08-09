@@ -32,6 +32,8 @@ $ ApiAddress=$(echo -n "tcp://$ClusterIP:5705" | base64)
 $ kubectl patch secret/storageos-api --namespace storageos --patch "{\"data\":{\"apiAddress\": \"$ApiAddress\"}}"
 ```
 
+> For more than one node clusters, the cluster.join variable must be set.
+
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
@@ -39,6 +41,8 @@ To install the chart with the release name `my-release`:
 ```console
 $ helm install --name my-release .
 ```
+
+> For more than one node clusters, the cluster.join variable must be set.
 
 The command deploys StorageOS on the Kubernetes cluster in the default configuration. The [configuration](#configuration)
 section lists the parameters that can be configured during installation.
