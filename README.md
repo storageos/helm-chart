@@ -114,6 +114,7 @@ Parameter | Description | Default
 `initContainer.tag` | StorageOS init container image tag | `0.1`
 `initContainer.pullPolicy` | StorageOS init container image pull policy | `IfNotPresent`
 `rbacEnabled` | Use of k8s RBAC features | `true`
+`pspEnabled` | Use of pod security polices | `false`
 `storageclass.name` | StorageOS storage class name | `fast`
 `storageclass.pool` | Default storage pool for storage class | `default`
 `storageclass.fsType` | Default filesystem type for storage class | `ext4`

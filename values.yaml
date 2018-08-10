@@ -27,6 +27,7 @@ csiExternalAttacher:
   pullPolicy: Always
 
 rbacEnabled: true
+pspEnabled: false
 
 cluster:
   # To generate a join token see:
