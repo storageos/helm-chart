@@ -21,3 +21,4 @@ spec:
   selector:
     app: {{ template "storageos.name" . }}
     release: {{ .Release.Name }}
+    kind: daemonset
