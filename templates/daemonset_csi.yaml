@@ -21,6 +21,7 @@ spec:
         chart: {{ template "storageos.chart" . }}
         heritage: {{ .Release.Service }}
         release: {{ .Release.Name }}
+        kind: daemonset
     spec:
       serviceAccount: {{ template "storageos.fullname" . }}-daemonset-sa
       hostPID: true

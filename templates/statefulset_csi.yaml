@@ -23,6 +23,7 @@ spec:
         chart: {{ template "storageos.chart" . }}
         heritage: {{ .Release.Service }}
         release: {{ .Release.Name }}
+        kind: statefulset
     spec:
       serviceAccount: {{ template "storageos.fullname" . }}-statefulset-sa
       containers:

@@ -22,6 +22,7 @@ spec:
         chart: {{ template "storageos.chart" . }}
         heritage: {{ .Release.Service }}
         release: {{ .Release.Name }}
+        kind: daemonset
     spec:
       hostPID: true
       hostNetwork: true
