@@ -18,12 +18,12 @@ csiDriverRegistrar:
 
 csiExternalProvisioner:
   repository: quay.io/k8scsi/csi-provisioner
-  tag: canary
+  tag: v0.3.0
   pullPolicy: Always
 
 csiExternalAttacher:
   repository: quay.io/k8scsi/csi-attacher
-  tag: canary
+  tag: v0.3.0
   pullPolicy: Always
 
 rbacEnabled: true
