@@ -90,7 +90,7 @@ Parameter | Description | Default
 --------- | ----------- | -------
 `cluster.join` | The cluster join string.  See [cluster discovery](https://docs.storageos.com/docs/install/prerequisites/clusterdiscovery) documentation for details.
 `image.repository` | StorageOS container image repository | `storageos/node`
-`image.tag` | StorageOS container image tag | `1.0.0-rc2`
+`image.tag` | StorageOS container image tag | `1.0.0-rc5`
 `image.pullPolicy` | StorageOS container image pull policy | `IfNotPresent`
 `initContainer.repository` | StorageOS init container image repository | `storageos/init`
 `initContainer.tag` | StorageOS init container image tag | `0.1`
@@ -99,10 +99,10 @@ Parameter | Description | Default
 `csiDriverRegistrar.tag` | CSI Driver Registrar container image tag | `v0.2.0`
 `csiDriverRegistrar.pullPolicy` | CSI Driver Registrar container image pull policy | `IfNotPresent`
 `csiExternalProvisioner.repository` | CSI External Provisioner container image repository | `quay.io/k8scsi/csi-provisioner`
-`csiExternalProvisioner.tag` | CSI External Provisioner container image tag | `canary`
+`csiExternalProvisioner.tag` | CSI External Provisioner container image tag | `v0.3.0`
 `csiExternalProvisioner.pullPolicy` | CSI External Provisioner container image pull policy | `Always`
 `csiExternalAttacher.repository` | CSI External Attacher container image repository | `quay.io/k8scsi/csi-attacher`
-`csiExternalAttacher.tag` | CSI External Attacher container image tag | `canary`
+`csiExternalAttacher.tag` | CSI External Attacher container image tag | `v0.3.0`
 `csiExternalAttacher.pullPolicy` | CSI External Attacher container image pull policy | `Always`
 `storageclass.name` | StorageOS storage class name | `fast`
 `storageclass.pool` | Default storage pool for storage class | `default`
