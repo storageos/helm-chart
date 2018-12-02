@@ -112,7 +112,7 @@ Parameter | Description | Default
 --------- | ----------- | -------
 `cluster.join` | The cluster join string.  See [cluster discovery](https://docs.storageos.com/docs/install/prerequisites/clusterdiscovery) documentation for details.
 `image.repository` | StorageOS container image repository | `storageos/node`
-`image.tag` | StorageOS container image tag | `1.0.0-rc5`
+`image.tag` | StorageOS container image tag | `1.0.1`
 `image.pullPolicy` | StorageOS container image pull policy | `IfNotPresent`
 `initContainer.repository` | StorageOS init container image repository | `storageos/init`
 `initContainer.tag` | StorageOS init container image tag | `0.1`
